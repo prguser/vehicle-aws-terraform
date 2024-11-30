@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db-container
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: fiap-secrets
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: fiap-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fiap-secrets
+              key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: db-volume
+          mountPath: /var/lib/postgresql/data
+     
+      volumes:
+      - name: db-volume
+        persistentVolumeClaim:
+          claimName: volume-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-svc
+spec:
+  type: NodePort
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+      nodePort: 32000
