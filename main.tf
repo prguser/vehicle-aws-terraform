@@ -24,5 +24,9 @@ module "ecr" {
   source = "./modules/ecr"
 }
 
+module "rds" {
+  source = "./modules/rds"
+}
+
 
 
