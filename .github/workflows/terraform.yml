@@ -4,22 +4,22 @@ on:
   pull_request:
     branches: [ "main" ]
     types: [ "closed" ]
-
+ 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: ./path/to/local/checkout-action
 
     - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: ./path/to/local/setup-terraform-action
       with:
         tf_version: 1.0.0
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: ./path/to/local/configure-aws-credentials-action
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
